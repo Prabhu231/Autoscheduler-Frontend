@@ -4,7 +4,7 @@
 This is the frontend built using **Next.js**, **TypeScript**, **Tailwind CSS**, and **ShadCN UI**.
 
 ---
-
+https://autoscheduler.in/
 ![image](https://github.com/user-attachments/assets/c70ed2da-6ccd-459d-a7d9-c715365b7266)
 
 ## 🚀 Features
