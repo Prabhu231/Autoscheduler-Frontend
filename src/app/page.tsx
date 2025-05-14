@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, Mail, Paperclip, Zap } from 'lucide-react';
+import { ArrowRight, Paperclip, Zap } from 'lucide-react';
 
 const HomePage = () => {
   return (

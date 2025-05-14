@@ -71,7 +71,7 @@ const ForgotPassword = () => {
           <CardContent className="space-y-4">
             <Alert className="bg-green-50 border-green-200 text-green-800">
               <AlertDescription>
-                We've sent a password reset link to <span className="font-semibold">{email}</span>. Please check your inbox and follow the instructions.
+                We have sent a password reset link to <span className="font-semibold">{email}</span>. Please check your inbox and follow the instructions.
               </AlertDescription>
             </Alert>
             <div className="flex items-center justify-center p-4">

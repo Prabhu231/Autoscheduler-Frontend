@@ -5,9 +5,7 @@ import Link from 'next/link';
 import { useRouter, usePathname } from 'next/navigation';
 import { 
   ChevronRight, 
-  ChevronDown, 
-  LogOut,
-  User
+  LogOut
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import {
@@ -24,7 +22,6 @@ import { menuItems } from './menuItems';
 
 const Sidebar = ({ className }: { className: string}) => {
   const [collapsed, setCollapsed] = useState(false);
-  const [activeMenu, setActiveMenu] = useState('');
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const router = useRouter();
@@ -35,8 +32,8 @@ const Sidebar = ({ className }: { className: string}) => {
       await api.post(`/authentication/logout/`);
       localStorage.removeItem('email_app');
       router.push('/auth/login');
-    } catch (error) {
-      console.error('Logout failed:', error);
+    } catch  {
+      // console.error('Logout failed:', error);
     }
   };
 
@@ -46,28 +43,10 @@ const Sidebar = ({ className }: { className: string}) => {
     setUsername(storedEmail ? storedEmail.split('@')[0] : 'User');
   }, []);
 
-  const toggleMenu = (title: string) => {
-    setActiveMenu(activeMenu === title ? '' : title);
-  };
-
   // Check if a menu item is active based on current path
   const isMenuActive = (href: string) => {
     return pathname === href;
   };
-
-  // Check if a parent menu should be expanded based on child routes
-  const shouldExpandParent = (submenu: any[]) => {
-    return submenu.some(item => pathname === item.href);
-  };
-
-  // Initialize expanded menus based on current path
-  useEffect(() => {
-    menuItems.forEach(item => {
-      if (item.submenu && shouldExpandParent(item.submenu)) {
-        setActiveMenu(item.title);
-      }
-    });
-  }, [pathname]);
 
   // This is a crucial function that toggles the sidebar state
   const handleToggleCollapse = () => {
@@ -114,104 +93,36 @@ const Sidebar = ({ className }: { className: string}) => {
         <ul className="space-y-1 px-3">
           {menuItems.map((item) => (
             <li key={item.title}>
-              {item.submenu ? (
-                <div>
-                  <button
-                    onClick={() => toggleMenu(item.title)}
-                    className={cn(
-                      "flex items-center w-full p-2.5 rounded-lg transition-all duration-200",
-                      activeMenu === item.title ? 
-                        "bg-purple-100 text-purple-900 font-medium shadow-sm" : 
-                        "text-gray-700 hover:bg-purple-50 hover:text-purple-800"
+              <Link 
+                href={item.href}
+                className={cn(
+                  "flex items-center p-2.5 rounded-lg transition-all duration-200",
+                  isMenuActive(item.href) ? 
+                    "bg-purple-100 text-purple-900 font-medium shadow-sm" : 
+                    "text-gray-700 hover:bg-purple-50 hover:text-purple-800"
+                )}
+              >
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <span className={cn(
+                        "flex items-center text-purple-700",
+                        collapsed ? "justify-center w-full" : "",
+                        isMenuActive(item.href) ? "text-purple-800" : ""
+                      )}>
+                        {item.icon}
+                      </span>
+                    </TooltipTrigger>
+                    {collapsed && (
+                      <TooltipContent side="right" className="bg-purple-50 text-purple-900 border-purple-200">
+                        {item.title}
+                      </TooltipContent>
                     )}
-                  >
-                    <TooltipProvider delayDuration={0}>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <span className={cn(
-                            "flex items-center text-purple-700",
-                            collapsed ? "justify-center w-full" : ""
-                          )}>
-                            {item.icon}
-                          </span>
-                        </TooltipTrigger>
-                        {collapsed && (
-                          <TooltipContent side="right" className="bg-purple-50 text-purple-900 border-purple-200">
-                            {item.title}
-                          </TooltipContent>
-                        )}
-                      </Tooltip>
-                    </TooltipProvider>
-                    
-                    {!collapsed && (
-                      <>
-                        <span className="ml-3 flex-1 text-left">{item.title}</span>
-                        <ChevronDown
-                          className={cn(
-                            "h-4 w-4 text-purple-500 transition-transform duration-300",
-                            activeMenu === item.title ? "rotate-180" : ""
-                          )}
-                        />
-                      </>
-                    )}
-                  </button>
-                  
-                  {!collapsed && activeMenu === item.title && (
-                    <ul className="mt-1 ml-6 space-y-1 animate-fadeIn">
-                      {item.submenu.map((subItem) => (
-                        <li key={subItem.title}>
-                          <Link 
-                            href={subItem.href}
-                            className={cn(
-                              "flex items-center p-2 text-sm rounded-md transition-all duration-200",
-                              isMenuActive(subItem.href) ? 
-                                "bg-purple-50 text-purple-900 font-medium" : 
-                                "text-gray-600 hover:text-purple-800 hover:bg-purple-50"
-                            )}
-                          >
-                            <div className={cn(
-                              "w-1.5 h-1.5 rounded-full",
-                              isMenuActive(subItem.href) ? "bg-purple-600" : "bg-purple-300"
-                            )} />
-                            <span className="ml-3">{subItem.title}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-                </div>
-              ) : (
-                <Link 
-                  href={item.href}
-                  className={cn(
-                    "flex items-center p-2.5 rounded-lg transition-all duration-200",
-                    isMenuActive(item.href) ? 
-                      "bg-purple-100 text-purple-900 font-medium shadow-sm" : 
-                      "text-gray-700 hover:bg-purple-50 hover:text-purple-800"
-                  )}
-                >
-                  <TooltipProvider delayDuration={0}>
-                    <Tooltip>
-                      <TooltipTrigger asChild>
-                        <span className={cn(
-                          "flex items-center text-purple-700",
-                          collapsed ? "justify-center w-full" : "",
-                          isMenuActive(item.href) ? "text-purple-800" : ""
-                        )}>
-                          {item.icon}
-                        </span>
-                      </TooltipTrigger>
-                      {collapsed && (
-                        <TooltipContent side="right" className="bg-purple-50 text-purple-900 border-purple-200">
-                          {item.title}
-                        </TooltipContent>
-                      )}
-                    </Tooltip>
-                  </TooltipProvider>
-                  
-                  {!collapsed && <span className="ml-3">{item.title}</span>}
-                </Link>
-              )}
+                  </Tooltip>
+                </TooltipProvider>
+                
+                {!collapsed && <span className="ml-3">{item.title}</span>}
+              </Link>
             </li>
           ))}
         </ul>

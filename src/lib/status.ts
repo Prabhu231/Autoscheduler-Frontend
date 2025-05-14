@@ -4,7 +4,7 @@ import { api } from "./api";
 const checkStatus = async () => {
     try {
         await api.get('/check/')
-    } catch(err) {
+    } catch {
         window.location.href = '/auth/login'
     }
 }

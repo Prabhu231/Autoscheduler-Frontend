@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Eye, EyeOff, Check, Lock, ArrowRight } from 'lucide-react';
 import {isAxiosError} from 'axios';
@@ -25,30 +25,33 @@ const ResetPassword = () => {
   const [success, setSuccess] = useState<boolean>(false);
   const [passwordFocused, setPasswordFocused] = useState<boolean>(false);
   const [passwordScore, setPasswordScore] = useState<number>(0);
-  const [token, setToken] = useState<string | null>(null);
+  const router = useRouter();
+  const [token, setToken] = useState<string | null>();
   const [tokenValid, setTokenValid] = useState<boolean | null>(null);
   const [tokenChecking, setTokenChecking] = useState<boolean>(true);
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
-
-  useEffect(() => {
-    const resetToken = searchParams.get('token');
-    if (resetToken) {
-      setToken(resetToken);
-      validateToken(resetToken);
-    } else {
-      setTokenValid(false);
-      setTokenChecking(false);
+    useEffect(() => {
+    // Only run on the client side
+    if (typeof window !== 'undefined') {
+      const searchParams = new URLSearchParams(window.location.search);
+      const tokenParam = searchParams.get('token');
+      if (tokenParam) {
+        setToken(tokenParam);
+        validateToken(tokenParam)
+      }
+      else {
+        setTokenValid(false);
+        setTokenChecking(false);
+      }
     }
-  }, [searchParams]);
+  }, []);
 
   const validateToken = async (resetToken: string) => {
     try {
       const res = await api.post('/reset-password/', { token: resetToken });
       setTokenValid(!res.data.error);
-    } catch (err) {
-      console.log(err)
+    } catch {
+      // console.log(err)
       setTokenValid(false);
     } finally {
       setTokenChecking(false);

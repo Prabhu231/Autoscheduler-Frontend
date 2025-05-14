@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -114,7 +114,7 @@ export default function AccountSettings() {
                 supportMessage,
                 supportCategory
             })
-        } catch (error) {
+        } catch {
             setSupportError("Failed to submit support request. Please try again.");
         } finally {
             setSupportSuccess(true);
@@ -142,7 +142,7 @@ export default function AccountSettings() {
                         <Card className="border-white-200 bg-white">
                             <CardHeader className="bg-white-50">
                                 <CardTitle className="text-purple-900">Change Password</CardTitle>
-                                <CardDescription>Update your account password here.</CardDescription>
+                               <CardDescription>Update your account password here.</CardDescription>
                             </CardHeader>
                             {passwordError && (
                                 <Alert variant="destructive" className="mx-6 w-5.5xl border-red-300 bg-red-50">
@@ -269,7 +269,7 @@ export default function AccountSettings() {
                                             </button>
                                         </div>
                                         {confirmPassword && confirmPassword !== newPassword && (
-                                            <p className="text-red-500 text-xs mt-1">Passwords don't match</p>
+                                            <p className="text-red-500 text-xs mt-1">Passwords does not match</p>
                                         )}
                                     </div>
 

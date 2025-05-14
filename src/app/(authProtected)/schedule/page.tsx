@@ -17,7 +17,7 @@ import * as XLSX from 'xlsx';
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { format, addMinutes, isAfter, parseISO } from "date-fns";
+import { format } from "date-fns";
 
 interface EmailFile {
   name: string;
@@ -28,14 +28,9 @@ interface EmailFile {
 }
 
 interface ImportedData {
-  [key: string]: any;
+  [key: string]: string | number | boolean | null;
 }
 
-interface ParseResult {
-  data: ImportedData[];
-  errors: any[];
-  meta: any;
-}
 
 const fmtSize = (bytes: number): string => {
   if (bytes < 1024) return bytes + ' bytes';
@@ -46,7 +41,7 @@ const fmtSize = (bytes: number): string => {
 const getTimeOpts = (): string[] => {
   const opts: string[] = [];
   for (let hour = 0; hour < 24; hour++) {
-    for (let minute of [0, 15, 30, 45]) {
+    for (const minute of [0, 15, 30, 45]) {
       const fmtHour = hour.toString().padStart(2, "0");
       const fmtMin = minute.toString().padStart(2, "0");
       opts.push(`${fmtHour}:${fmtMin}`);
@@ -68,7 +63,7 @@ const EmailComposer: React.FC = () => {
   const [isValid, setIsValid] = useState<boolean>(false);
   const [schedValid, setSchedValid] = useState<boolean>(true);
   const [schedErr, setSchedErr] = useState<string | null>(null);
-  const [visRecips, setVisRecips] = useState<number>(5);
+  const visRecips = 5;
   const [showAll, setShowAll] = useState<boolean>(false);
   const [impErr, setImpErr] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState<boolean>(false);
@@ -200,11 +195,11 @@ const EmailComposer: React.FC = () => {
     setImpSuccess(null);
 
     if (file.type === 'text/csv') {
-      Papa.parse(file, {
+      Papa.parse<ImportedData>(file, {
         header: true,
         skipEmptyLines: true,
-        complete: (results: ParseResult) => {
-          processImport(results.data);
+        complete: (results) => {
+          processImport(results.data as ImportedData[]);
         },
         error: (error: Error) => {
           setImpErr(`Error parsing CSV: ${error.message}`);
@@ -242,7 +237,7 @@ const EmailComposer: React.FC = () => {
   };
 
   const processImport = (data: ImportedData[]): void => {
-    let newEmails: string[] = [];
+    const newEmails: string[] = [];
     let errCount = 0;
 
     if (!data.length) {

@@ -41,25 +41,18 @@ const Authentication = () => {
       
       const autoLogin = async () => {
         try {
-          console.log('Attempting auto login');
           const res = await api.post('/authentication/', {
             auto_login: 1
           });
           
-          console.log('Auto login response:', res.data);
           
           if (res.data.flag === 1 && res.data.access_token) {
-            console.log('Auto login successful, setting token');
+            // console.log('Auto login successful, setting token');
             localStorage.setItem('access_token_app', res.data.access_token);
             router.push('/schedule');
           }
-        } catch (err) {
-          console.log('Auto login failed');
-          if (isAxiosError(err)) {
-            console.log('Error details:', err.response?.data);
-          } else {
-            console.log('Error:', err);
-          }
+        } catch {
+
         }
       };
       
@@ -112,7 +105,7 @@ const Authentication = () => {
         password: password
       });
 
-      console.log('Login/register response:', res.data);
+      // console.log('Login/register response:', res.data);
 
       if (res.data.error) {
         setError(res.data.error);
@@ -129,10 +122,10 @@ const Authentication = () => {
       setSuccess(true);
     } catch (err) {
       if (isAxiosError(err)) {
-        console.error('API error response:', err.response?.data);
+        // console.error('API error response:', err.response?.data);
         setError(err.response?.data.error || 'An error occurred during authentication');
       } else {
-        console.error('Unexpected error:', err);
+        // console.error('Unexpected error:', err);
         setError('Authentication failed. Please try again later.');
       }
     } finally {

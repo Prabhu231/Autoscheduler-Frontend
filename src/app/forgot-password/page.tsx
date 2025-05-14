@@ -1,5 +1,4 @@
 import ForgotPassword from "@/components/password/forgotPassword";
-import { Fragment } from "react";
 
 
 const forgotPasswordPage = () => {
