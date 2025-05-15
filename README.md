@@ -37,7 +37,7 @@ cd autoscheduler-frontend
 # 2. Install dependencies
 npm install
 # or
-yarn
+yarn install
 
 # 3. Run the development server
 npm run dev
